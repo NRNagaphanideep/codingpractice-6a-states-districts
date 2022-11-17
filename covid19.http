@@ -1,0 +1,75 @@
+GET http://localhost:3000/states/
+
+###
+GET http://localhost:3000/states/8/
+Content-Type: application/json
+
+
+{
+  "stateId": 8,
+  "stateName": "Delhi",
+  "population": 16787941
+}
+
+###
+post http://localhost:3000/districts/
+Content-Type: application/json
+
+{
+  "districtName": "Bagalkot",
+  "stateId": 3,
+  "cases": 2323,
+  "cured": 2000,
+  "active": 315,
+  "deaths": 8
+}
+
+####
+GET http://localhost:3000/districts/322/
+Content-Type: application/json
+
+{
+  "districtId": 322,
+  "districtName": "Haveri",
+  "stateId": 36,
+  "cases": 2816,
+  "cured": 2424,
+  "active": 172,
+  "deaths": 220
+}
+
+###
+DELETE http://localhost:3000/districts/322/
+
+###
+PUT http://localhost:3000/districts/322/
+Content-Type: application/json
+
+{
+  "districtName": "Nadia",
+  "stateId": 3,
+  "cases": 9628,
+  "cured": 6524,
+  "active": 3000,
+  "deaths": 104
+}
+
+###
+GET http://localhost:3000/states/8/stats/ 
+Content-Type: application/json
+
+{
+  "totalCases": 724355,
+  "totalCured": 615324,
+  "totalActive": 99254,
+  "totalDeaths": 9777
+}
+
+
+####
+GET http://localhost:3000/districts/322/details/
+Content-Type: application/json
+
+{
+  "stateName": "Maharashtra"
+}
