@@ -26,38 +26,37 @@ const initializeDbAndServer = async () => {
 
 initializeDbAndServer();
 const convertStateDbObjectToResponseObject = (dbObject) => {
-    return {
-        stateId : dbObject.state_id,
-        stateName : dbObject.state_name,
-        population : dbObject.population,
-    };
+  return {
+    stateId: dbObject.state_id,
+    stateName: dbObject.state_name,
+    population: dbObject.population,
+  };
 };
 
 const convertDistrictDbObjectToResponseObject = (dbObject) => {
-    return {
-        districtId : dbObject.district_id,
-        districtName : dbObject.district_name,
-        stateId : dbObject.state_id,
-        cases : dbObject.cases,
-        cured : dbObject.cured,
-        active : dbObject.active,
-        deaths : dbObject.deaths,
-    };
+  return {
+    districtId: dbObject.district_id,
+    districtName: dbObject.district_name,
+    stateId: dbObject.state_id,
+    cases: dbObject.cases,
+    cured: dbObject.cured,
+    active: dbObject.active,
+    deaths: dbObject.deaths,
+  };
 };
 
 //GET ALL STATES API
 app.get("/states/", async (request, response) => {
-  const getStatesQuery = `
+  const getStateQuery = `
     SELECT
-    *
+      state_name
     FROM
-    state
-    ORDER BY 
-    state_name;`;
-  const statesArray = await db.all(getStatesQuery);
-  response.send(convertStateDbObjectToResponseObject(statesArray));
+      state;`;
+  const statesArray = await db.all(getStateQuery);
+  response.send(
+    statesArray.map((eachState) => ({ stateName: eachState.state_name }))
+  );
 });
-
 //get stateID api
 
 app.get("/states/:stateId/", async (request, response) => {
