@@ -178,15 +178,16 @@ app.get("/states/:stateId/stats/", async (request, response) => {
 ///state name based on district id api
 app.get("/districts/:districtId/details/", async (request, response) => {
   const { districtId } = request.params;
-  const getDistrictQuery = `
-    SELECT 
-    *
-    FROM
-district
-    WHERE
-    state_name = ${stateName};`;
-  const statesArray = await db.get(getDistrictQuery);
-  response.send(convertStateDbObjectToResponseObject(statesArray));
-});
+  const getDistrictIdQuery = `
+select state_id from district 
+where district_id = ${districtId};`; //With this we will get the state_id using district table
+  const getDistrictIdQueryResponse = await db.get(getDistrictIdQuery);
+
+  const getStateNameQuery = `
+select state_name as stateName from state 
+where state_id = ${getDistrictIdQueryResponse.state_id};`; //With this we will get state_name as stateName using the state_id
+  const getStateNameQueryResponse = await db.get(getStateNameQuery);
+  response.send(getStateNameQueryResponse);
+}); //sending the required response
 
 module.exports = app;
