@@ -49,12 +49,14 @@ const convertDistrictDbObjectToResponseObject = (dbObject) => {
 app.get("/states/", async (request, response) => {
   const getStateQuery = `
     SELECT
-      state_name
+      *
     FROM
       state;`;
   const statesArray = await db.all(getStateQuery);
   response.send(
-    statesArray.map((eachState) => ({ stateName: eachState.state_name }))
+    statesArray.map((eachState) =>
+      convertStateDbObjectToResponseObject(eachState)
+    )
   );
 });
 //get stateID api
@@ -155,15 +157,22 @@ app.put("/districts/:districtId/", async (request, response) => {
 //RETURN THE STATS
 app.get("/states/:stateId/stats/", async (request, response) => {
   const { stateId } = request.params;
-  const getStatsQuery = `
-    SELECT 
-    *
-    FROM
-    state
-    WHERE
-    state_id = ${stateId};`;
-  const statesArray = await db.all(getStatsQuery);
-  response.send(convertStateDbObjectToResponseObject(statesArray));
+  const getStateStatsQuery = `SELECT
+  SUM(cases),
+  SUM(cured),
+  SUM(active),
+  SUM(deaths)
+  FROM
+  district
+  WHERE
+  state_id = ${stateId};`;
+  const stats = await db.get(getStateStatsQuery);
+  response.send({
+    totalCases: stats["SUM(cases)"],
+    totalCured: stats["SUM(cured)"],
+    totalActive: stats["SUM(active)"],
+    totalDeaths: stats["SUM(deaths)"],
+  });
 });
 
 ///state name based on district id api
@@ -173,9 +182,9 @@ app.get("/districts/:districtId/details/", async (request, response) => {
     SELECT 
     *
     FROM
-    district
+district
     WHERE
-    district_id = ${districtId};`;
+    state_name = ${stateName};`;
   const statesArray = await db.get(getDistrictQuery);
   response.send(convertStateDbObjectToResponseObject(statesArray));
 });
